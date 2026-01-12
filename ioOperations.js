@@ -1,15 +1,15 @@
-const fs = require("fs")
+const fs = require("fs").promises
 
 const { FILE_NAME } = require("./constants")
 
 
-function createFile(){
-    return fs.writeFileSync(FILE_NAME, "")
+async function createFile(){
+    return fs.writeFile(FILE_NAME, "")
 }
 
-function readFile(){
+async function readFile(){
     try {
-        const file = fs.readFileSync(FILE_NAME, {
+        const file = await fs.readFile(FILE_NAME, {
             encoding: "utf8",
             flag: "r"
         })
@@ -20,9 +20,8 @@ function readFile(){
     }
 }
 
-function updateFile(payload){
-    console.log(payload)
-    return fs.writeFileSync(FILE_NAME, JSON.stringify(payload))
+async function updateFile(payload){
+    return fs.writeFile(FILE_NAME, JSON.stringify(payload))
 }
 
 

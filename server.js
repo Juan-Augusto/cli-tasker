@@ -6,10 +6,10 @@ const taskIdGenerator = (fileContent) => {
     return Math.max(...fileContent.map(t => t.id)) + 1
 }
 
-const handleAddTask = (argument, retries = 0) => {
+const handleAddTask = async (argument, retries = 0) => {
     const { content } = argument
     try{
-        const fileContent = readFile()
+        const fileContent = await readFile()
         const taskFileExists = fileContent.length === 0
         let payload = fileContent
         if(taskFileExists) {
@@ -35,9 +35,9 @@ const handleAddTask = (argument, retries = 0) => {
     }
 }
 
-const handleListTasks = (argument) => {
+const handleListTasks = async (argument) => {
      
-    const allTasks = readFile()
+    const allTasks = await readFile()
     let filteredTasks = null
     
     if(argument.status){
@@ -48,17 +48,17 @@ const handleListTasks = (argument) => {
     return allTasks
 }
 
-const handleDeleteTask = (argument) => {
+const handleDeleteTask = async (argument) => {
     const { id } = argument
-    const allTasks = readFile()
+    const allTasks = await readFile()
     const filteredTasks = allTasks.filter(t => t.id != id)
     updateFile(filteredTasks)
     return
 }
 
-const handleUpdateTask = (argument) => {
+const handleUpdateTask = async (argument) => {
     const { id, content } = argument
-    const allTasks = readFile()
+    const allTasks = await readFile()
     const taskToBeUpdated = allTasks.map( t => 
         t.id === parseInt(id) ?
         { ...t, content}
@@ -72,9 +72,9 @@ const resetTasks = () => {
     
 }
 
-const markTask = (argument) => {
+const markTask = async (argument) => {
     const { id, status } = argument
-    const allTasks = readFile()
+    const allTasks = await readFile()
     const taskToBeUpdated = allTasks.map( t => 
         t.id === parseInt(id) ?
         { ...t, status}
@@ -117,15 +117,15 @@ const argumentParser = (argument) => {
     }
 }
 
-function main(argument) {
+async function main(argument) {
     const argumentMapper = argumentParser(argument)
     const { operation } = argumentMapper
 
-    if(operation === "add") handleAddTask(argumentMapper)
-    if(operation === "update") handleUpdateTask(argumentMapper)
-    if(operation === "delete") handleDeleteTask(argumentMapper)
-    if(operation.includes("mark")) markTask(argumentMapper)
-    if(operation === "list") handleListTasks(argumentMapper)
+    if(operation === "add") await handleAddTask(argumentMapper)
+    if(operation === "update") await handleUpdateTask(argumentMapper)
+    if(operation === "delete") await handleDeleteTask(argumentMapper)
+    if(operation.includes("mark")) await markTask(argumentMapper)
+    if(operation === "list") await handleListTasks(argumentMapper)
 }
 
 main(argument)
